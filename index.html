@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🔮 RNG Simulator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <div class="title-block">
+        <h1>🔮 RNG Sim</h1>
+        <div class="pity-bar">🛡️ <span id="pity-epic">0</span>/50 | 🌟 <span id="pity-leg">0</span>/120 | 🔮 <span id="pity-myth">0</span>/250</div>
+      </div>
+      <div class="stats-bar">
+        <div class="stat">💎 <span id="gems">0</span></div>
+        <div class="stat">🍀 x<span id="luck">1.0</span></div>
+        <div class="stat">⏱️ <span id="duration">0.8</span>s</div>
+        <div class="stat">📦 <span id="inv-count">0</span>/<span id="inv-max">50</span></div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="inventory-bar">
+        <div class="multi-spin-group">
+          <button class="btn-sm active" data-multi="1">x1</button>
+          <button class="btn-sm" data-multi="10">x10</button>
+          <button class="btn-sm" data-multi="50">x50</button>
+        </div>
+        <div class="auto-toggle">
+          <input type="checkbox" id="auto-roll">
+          <label for="auto-roll">Auto Roll</label>
+        </div>
+      </div>
+
+      <div class="spin-area">
+        <div class="slot-window">
+          <div class="slot-icon">❓</div>
+          <div class="slot-name">Tekan Spin</div>
+          <div class="slot-flash"></div>
+        </div>
+        <div class="progress-track"><div class="progress-fill"></div></div>
+        <div class="result-panel hidden">
+          <div class="res-icon"></div>
+          <div class="res-tier"></div>
+          <div class="res-info"></div>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="spin-btn">🎲 SPIN</button>
+    </div>
+
+    <nav class="bottom-nav">
+      <button data-modal="shop-modal">🏪 Shop</button>
+      <button data-modal="collection-modal">🎒 Koleksi</button>
+      <button data-modal="event-modal">🎉 Event</button>
+      <button data-modal="settings-modal">⚙️</button>
+    </nav>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Modals -->
+  <div class="modal" id="shop-modal">
+    <div class="modal-box">
+      <h3>🏪 Item Shop</h3>
+      <div class="shop-grid" id="shop-list"></div>
+      <button class="close-modal" data-close>Tutup</button>
+    </div>
+  </div>
+
+  <div class="modal" id="collection-modal">
+    <div class="modal-box">
+      <h3>🎒 Koleksi & Inventory</h3>
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">Semua</button>
+        <button class="filter-btn" data-filter="found">Dimiliki</button>
+        <button class="filter-btn" data-filter="missing">Belum Semua</button>
+      </div>
+      <div class="inv-stats">Ditemukan: <span id="col-found">0</span>/<span id="col-total">0</span> | Duplikat: <span id="col-dups">0</span></div>
+      <div class="grid" id="collection-grid"></div>
+      <button class="close-modal" data-close>Tutup</button>
+    </div>
+  </div>
+
+  <div class="modal event-modal" id="event-modal">
+    <div class="modal-box">
+      <h3>🌸 April Fools Event</h3>
+      <div class="event-decor-top">🤡</div>
+      <div class="event-progress">Token: <span id="event-tokens">0</span>/20</div>
+      <p>Spin selama event untuk kumpulkan Event Tokens. Tukar dengan crate eksklusif!</p>
+      <button class="close-modal" data-close>Tutup</button>
+    </div>
+  </div>
+
+  <div class="modal" id="settings-modal">
+    <div class="modal-box">
+      <h3>⚙️ Settings</h3>
+      <div class="settings-group">
+        <label><input type="checkbox" id="set-sound" checked> 🔊 Suara: ON</label>
+        <label><input type="checkbox" id="set-vibrate" checked> 📳 Getaran: ON</label>
+        <button class="btn-action" id="btn-export">📤 Export Save</button>
+        <label class="file-label btn-action">📥 Import Save <input type="file" id="file-import" accept=".json" hidden></label>
+        <button class="btn-action danger" id="btn-reset">🗑️ Reset Progress</button>
+      </div>
+      <button class="close-modal" data-close>Tutup</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

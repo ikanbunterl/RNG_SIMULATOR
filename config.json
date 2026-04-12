@@ -1,0 +1,22 @@
+{
+  "settings": {
+    "title": "🔮 RNG Simulator",
+    "spinDuration": 800,
+    "inventoryMax": 50
+  },
+  "tier_colors": {
+    "Common": "#9ca3af", "Uncommon": "#22c55e", "Rare": "#3b82f6",
+    "Epic": "#a855f7", "Legendary": "#f59e0b", "Mythic": "#ef4444",
+    "Divine": "#ec4899", "Celestial": "#00f0ff", "April Fools": "#ff69b4"
+  },
+  "tier_thresholds": {
+    "Celestial": 999999999, "Divine": 999999000, "Mythic": 999000000,
+    "Legendary": 990000000, "Epic": 950000000, "Rare": 800000000, "Uncommon": 500000000
+  },
+  "pity_system": { "epic": 50, "legendary": 120, "mythic": 250 },
+  "event_chances": { "april_fools": 0.08 },
+  "shop_crates": [
+    { "id": "luck_crate", "name": "🍀 Luck Crate", "price": 150, "desc": "+10% Luck Permanent", "type": "luck", "value": 0.1 },
+    { "id": "speed_crate", "name": "⚡ Speed Crate", "price": 200, "desc": "-50ms Spin Time", "type": "speed", "value": 50 }
+  ]
+}
