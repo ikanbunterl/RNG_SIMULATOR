@@ -1,22 +1,53 @@
 {
-  "settings": {
-    "title": "🔮 RNG Simulator",
-    "spinDuration": 800,
-    "inventoryMax": 50
-  },
-  "tier_colors": {
-    "Common": "#9ca3af", "Uncommon": "#22c55e", "Rare": "#3b82f6",
-    "Epic": "#a855f7", "Legendary": "#f59e0b", "Mythic": "#ef4444",
-    "Divine": "#ec4899", "Celestial": "#00f0ff", "April Fools": "#ff69b4"
-  },
-  "tier_thresholds": {
-    "Celestial": 999999999, "Divine": 999999000, "Mythic": 999000000,
-    "Legendary": 990000000, "Epic": 950000000, "Rare": 800000000, "Uncommon": 500000000
-  },
-  "pity_system": { "epic": 50, "legendary": 120, "mythic": 250 },
-  "event_chances": { "april_fools": 0.08 },
-  "shop_crates": [
-    { "id": "luck_crate", "name": "🍀 Luck Crate", "price": 150, "desc": "+10% Luck Permanent", "type": "luck", "value": 0.1 },
-    { "id": "speed_crate", "name": "⚡ Speed Crate", "price": 200, "desc": "-50ms Spin Time", "type": "speed", "value": 50 }
-  ]
+  "initialGems": 1000,
+  "pityThreshold": 50,
+  "maxLuckLevel": 10,
+  "crateBaseCost": 100,
+  "crateCostMultiplier": 150,
+  "autoSpinInterval": 800,
+  "eventTriggerChance": 0.15,
+  "gemMultipliers": { "duplicate": 0.5, "newItemBonus": 1.2 },
+  "rarityRules": [
+    { "id": "common", "name": "Common", "baseChance": 60.0, "colorVar": "--r-common" },
+    { "id": "uncommon", "name": "Uncommon", "baseChance": 25.0, "colorVar": "--r-uncommon" },
+    { "id": "rare", "name": "Rare", "baseChance": 10.0, "colorVar": "--r-rare" },
+    { "id": "epic", "name": "Epic", "baseChance": 4.0, "colorVar": "--r-epic" },
+    { "id": "legendary", "name": "Legendary", "baseChance": 0.8, "colorVar": "--r-legendary" },
+    { "id": "mythic", "name": "Mythic", "baseChance": 0.2, "colorVar": "--r-mythic" },
+    { "id": "divine", "name": "Divine", "baseChance": 0.05, "colorVar": "--r-divine" }
+  ],
+  "banners": [
+    { "id": "b_april_fire", "name": "🔥 Festival Api", "startMonth": 4, "startDay": 10, "endMonth": 4, "endDay": 16, "rateUp": ["rare", "epic"], "bonusChance": 4.0 }
+  ],
+  "milestones": [
+    { "id": "m1", "name": "Pemula Gacha", "target": 50, "type": "spins", "reward": { "gems": 200 } },
+    { "id": "m2", "name": "Pemburu Epic", "target": 5, "type": "epic", "reward": { "gems": 500 } },
+    { "id": "m3", "name": "Legenda Hidup", "target": 2, "type": "legendary", "reward": { "luck": 1 } },
+    { "id": "m4", "name": "Kolektor Langka", "target": 200, "type": "spins", "reward": { "gems": 1000 } }
+  ],
+  "events": [
+    { "id": "double_gems", "name": "💰 Double Gems", "duration": 5, "effectType": "gem_mult", "value": 2 },
+    { "id": "luck_boost", "name": "🍀 Luck Surge (+2)", "duration": 5, "effectType": "luck_temp", "value": 2 },
+    { "id": "pity_rush", "name": "⚡ Pity Rush (-10)", "duration": 3, "effectType": "pity_mod", "value": -10 }
+  ],
+  "specialEvents": {
+    "april_fools": {
+      "id": "april_fools", "name": "🤡 April Fools: RNG Chaos",
+      "start": { "month": 4, "day": 1 }, "end": { "month": 4, "day": 1 },
+      "description": "Probabilitas rusak total! Gems bisa 0x hingga 10x. Item misterius muncul!",
+      "customLogic": "chaos_mode"
+    },
+    "new_year": {
+      "id": "new_year", "name": "🎆 Festival Tahun Baru",
+      "start": { "month": 12, "day": 30 }, "end": { "month": 1, "day": 2 },
+      "description": "Selamat datang tahun baru! 3x Gems, Pity -5 tiap spin, item kembang api eksklusif!",
+      "gemMult": 3, "pityMod": -5
+    },
+    "halloween": {
+      "id": "halloween", "name": "🎃 Halloween: Curse & Blessing",
+      "start": { "month": 10, "day": 25 }, "end": { "month": 11, "day": 2 },
+      "description": "Spin terkutuk (-50% gems) atau diberkati (+100% & guaranteed Rare+). Item hantu langka!",
+      "customLogic": "curse_bless"
+    }
+  }
 }
