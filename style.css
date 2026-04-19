@@ -125,3 +125,40 @@ body.shake { animation: screenShake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
 @media (max-width: 600px) {
   .header h1 { font-size: 14px; } .nav button { font-size: 7px; padding: 6px 10px; } .spin-display { padding: 20px; } .spin-result { font-size: 12px; } .stats-bar { gap: 8px; } .stat-item { padding: 6px 10px; } .shop-item { flex-direction: column; align-items: flex-start; }
 }
+
+/* 🔒 LOCK SYSTEM UI/UX */
+.btn { position: relative; } /* Pastikan tombol punya referensi posisi */
+.btn.locked {
+  opacity: 0.45;
+  cursor: not-allowed !important;
+  filter: grayscale(0.8) brightness(0.7);
+  pointer-events: auto; /* Tetap aktifkan hover untuk tooltip */
+  transition: all 0.2s ease;
+}
+.btn.locked::after {
+  content: '🔒';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  pointer-events: none;
+  z-index: 2;
+}
+.btn.locked:hover::before {
+  content: attr(data-lock-msg);
+  position: absolute;
+  bottom: 115%; left: 50%;
+  transform: translateX(-50%);
+  background: #111;
+  color: #ff6b6b;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  white-space: nowrap;
+  z-index: 50;
+  border: 2px solid #ff6b6b;
+  font-family: var(--pixel-font);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+  pointer-events: none;
+}
+.btn.locked:hover { background: var(--bg-dark) !important; border-color: #555 !important; }
