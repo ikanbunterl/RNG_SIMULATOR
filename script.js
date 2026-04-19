@@ -14,6 +14,50 @@ let audioCtx = null;
 let soundEnabled = true;
 let gemDisplayVal = 0;
 
+// 🔒 LOCK SYSTEM CONFIG
+const UNLOCK_REQS = {
+  bulk10:   { spins: 500,  msg: "🔒 Butuh 500 Total Spins" },
+  bulk100:  { spins: 5000, msg: "🔒 Butuh 5.000 Total Spins" },
+  fastSpin: { spins: 2000, rebirth: 1, msg: "🔒 Butuh 2.000 Spins & 1 Rebirth" },
+  autoSpin: { spins: 1000, msg: "🔒 Butuh 1.000 Total Spins" }
+};
+let prevLockState = { bulk10: true, bulk100: true, fastSpin: true, autoSpin: true };
+
+function isLocked(key) {
+  const r = UNLOCK_REQS[key];
+  if (!r) return false;
+  const spinOk = game.totalSpins >= r.spins;
+  const rebirthOk = r.rebirth ? game.rebirthCount >= r.rebirth : true;
+  return !(spinOk && rebirthOk);
+}
+
+function updateFeatureLocks() {
+  const locks = [
+    { id: 'btnBulk10',   key: 'bulk10',   name: 'x10 Spin' },
+    { id: 'btnBulk100',  key: 'bulk100',  name: 'x100 Spin' },
+    { id: 'btnFastToggle', key: 'fastSpin', name: 'Fast Spin' },
+    { id: 'btnAuto',     key: 'autoSpin', name: 'Auto Spin' }
+  ];
+
+  locks.forEach(l => {
+    const btn = document.getElementById(l.id);
+    if (!btn) return;
+    const currentlyLocked = isLocked(l.key);
+
+    if (currentlyLocked) {
+      btn.classList.add('locked');
+      btn.disabled = true;
+      btn.setAttribute('data-lock-msg', UNLOCK_REQS[l.key].msg);
+    } else {
+      if (prevLockState[l.key]) notify(`✨ ${l.name} telah terbuka! Selamat bermain!`);
+      btn.classList.remove('locked');
+      btn.disabled = false;
+      btn.removeAttribute('data-lock-msg');
+    }
+    prevLockState[l.key] = currentlyLocked;
+  });
+}
+
 // ======================== SOUND ENGINE ========================
 function initAudio() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -93,9 +137,7 @@ function showPage(page) {
 // ======================== RNG ENGINE & PITTY ========================
 function getEffectiveLuck() {
   let luck = game.luckMultiplier + game.rebirthLuckBonus;
-  // Set bonus
   if (game.completedSets.includes('april_complete')) luck += 0.3;
-  // Equipped item bonus
   if (game.equippedItem === 'spring_crown') luck += 0.2;
   return luck;
 }
@@ -104,7 +146,7 @@ function rollRarity(rarityTable) {
   let totalWeight = 0; let weights = {};
   for (let key in rarityTable) {
     let r = rarityTable[key];
-    if(r.rebirthReq && game.rebirthCount < r.rebirthReq) continue; // Lock transcendent
+    if(r.rebirthReq && game.rebirthCount < r.rebirthReq) continue;
     let weight = (1 / r.odds) * (key === 'common' ? 1 : luck);
     weights[key] = weight; totalWeight += weight;
   }
@@ -126,7 +168,7 @@ function triggerVisuals(rarityKey) {
   if (['mythic', 'secret', 'diamond', 'divine', 'ethereal', 'transcendent'].includes(rarityKey)) {
     body.classList.add('shake');
     setTimeout(() => body.classList.remove('shake'), 400);
-    if (navigator.vibrate) navigator.vibrate([100, 30, 100]); // Haptic
+    if (navigator.vibrate) navigator.vibrate([100, 30, 100]);
   }
   playSound(rarityKey);
 }
@@ -182,6 +224,7 @@ function updateUI() {
     bestEl.textContent = br.name; bestEl.className = 'value ' + br.cssClass;
   }
   renderShop();
+  updateFeatureLocks(); // ⬅️ UPDATE LOCKS SETIAP UI REFRESH
 }
 function notify(msg) {
   let el = document.getElementById('notification');
@@ -190,7 +233,7 @@ function notify(msg) {
 }
 function renderUpdateLog() {
   let container = document.getElementById('updateLog');
-  container.innerHTML = '';
+  container.innerHTML = ''; 
   CONFIG.updateEntries.forEach(entry => {
     let div = document.createElement('div'); div.className = 'update-entry';
     div.innerHTML = `<div class="update-date">${entry.date}</div><div class="update-text">${entry.text}</div>`;
@@ -200,25 +243,24 @@ function renderUpdateLog() {
 
 // ======================== MAIN SPIN ========================
 function toggleFastSpin() {
+  if (isLocked('fastSpin')) { notify("🔒 Fitur Fast Spin masih terkunci!"); return; }
   CONFIG.settings.fastSpinMode = !CONFIG.settings.fastSpinMode;
-  document.getElementById('btnFastToggle').textContent = CONFIG.settings.fastSpinMode ? 'ON' : 'OFF';
+  document.getElementById('btnFastToggle').textContent = CONFIG.settings.fastSpinMode ? '⚡ Fast Spin ON' : '⚡ Fast Spin OFF';
   document.querySelector('.spin-area').classList.toggle('fast-spin', CONFIG.settings.fastSpinMode);
   notify(CONFIG.settings.fastSpinMode ? '⚡ Fast Spin ON' : '⏸ Fast Spin OFF');
 }
+
 function doSpin(isAuto=false) {
   initAudio();
   let display = document.getElementById('spinDisplay');
   let resultEl = document.getElementById('spinResult');
   let labelEl = document.getElementById('spinRarityLabel');
-  
   if(CONFIG.settings.fastSpinMode || isAuto) {
     finishSpin(RNG_DATA.rarities, resultEl, labelEl, display);
     return;
   }
-
   display.classList.add('spinning');
   document.getElementById('btnSpin').disabled = true;
-  
   let count = 0;
   let tickInterval = setInterval(() => {
     let keys = Object.keys(RNG_DATA.rarities).filter(k => !RNG_DATA.rarities[k].rebirthReq || game.rebirthCount >= RNG_DATA.rarities[k].rebirthReq);
@@ -233,6 +275,7 @@ function doSpin(isAuto=false) {
     }
   }, CONFIG.settings.flickerInterval);
 }
+
 function finishSpin(rarityTable, resultEl, labelEl, display) {
   let rolled = rollRarity(rarityTable);
   let rarity = rarityTable[rolled];
@@ -245,13 +288,11 @@ function finishSpin(rarityTable, resultEl, labelEl, display) {
   game.inventory[rolled]++;
   updateBestRarity(rolled);
   addLog(rolled, rarity);
-  
   display.classList.remove('spinning');
   resultEl.textContent = rarity.name;
   resultEl.className = 'spin-result ' + rarity.cssClass;
   labelEl.textContent = `1 in ${rarity.odds} | +${rarity.gems} Gems`;
   labelEl.className = 'spin-rarity-label ' + rarity.cssClass;
-  
   showFloatingGems(rarity.gems);
   triggerVisuals(rolled);
   document.getElementById('btnSpin').disabled = false;
@@ -260,6 +301,8 @@ function finishSpin(rarityTable, resultEl, labelEl, display) {
 
 // ======================== BULK SPIN ========================
 function doBulkSpin(amount) {
+  const key = amount === 10 ? 'bulk10' : 'bulk100';
+  if (isLocked(key)) { notify(`🔒 Spin x${amount} masih terkunci!`); return; }
   initAudio();
   let summary = {};
   for(let i=0; i<amount; i++) {
@@ -274,14 +317,14 @@ function doBulkSpin(amount) {
       addLog(rolled, rarity);
     }
   }
-  let msg = `📦 Bulk x${amount}: ` + Object.entries(summary).map(([r,c]) => `${RNG_DATA.rarities[r].name} x${c}`).join(', ');
-  showFloatingGems(Object.values(summary).reduce((a,b)=>a+0,0) * 10); // dummy gem float
+  let msg = `📦 Bulk x${amount}:` + Object.entries(summary).map(([r,c]) => `${RNG_DATA.rarities[r].name} x${c}`).join(', ');
   notify(msg);
   updateUI(); renderInventory(); updatePityUI(); saveToStorage();
 }
 
 // ======================== AUTO SPIN ========================
 function toggleAutoSpin() {
+  if (isLocked('autoSpin')) { notify("🔒 Fitur Auto Spin masih terkunci!"); return; }
   let btn = document.getElementById('btnAuto');
   if (autoSpinInterval) {
     clearInterval(autoSpinInterval); autoSpinInterval = null;
@@ -292,6 +335,7 @@ function toggleAutoSpin() {
     autoSpinInterval = setInterval(() => doSpin(true), CONFIG.settings.autoSpinInterval);
   }
 }
+
 function updateBestRarity(rolled) {
   const order = ['common','uncommon','rare','epic','legendary','mythic','diamond','divine','secret','ethereal','transcendent'];
   let currentIdx = order.indexOf(game.bestRarity);
@@ -308,10 +352,10 @@ function addLog(rolled, rarity, isEvent = false) {
 }
 function renderLog() {
   let container = document.getElementById('logContainer'); container.innerHTML = '';
-  if (game.log.length === 0) { container.innerHTML = '<div style="text-align:center;padding:10px;">Belum ada log spin.</div>'; return; }
+  if (game.log.length === 0) { container.innerHTML = '<p style="text-align:center;color:var(--text-dim)">Belum ada log spin.</p>'; return; }
   game.log.forEach(entry => {
     let div = document.createElement('div'); div.className = 'log-entry';
-    div.innerHTML = `<span class="log-time">[${entry.time}]</span> <span class="log-rarity ${entry.cssClass}">${entry.rarityName}</span> <span style="color:var(--text-dim);">+${entry.gems} gems</span> ${entry.isEvent ? '<span style="color:#4CAF50;">[EVENT]</span>' : ''}`;
+    div.innerHTML = `<span class="log-time">[${entry.time}]</span> <span class="log-rarity ${entry.cssClass}">${entry.rarityName}</span> <span style="color:var(--text-dim)">+${entry.gems} gems</span> ${entry.isEvent ? '<span style="color:#4CAF50">[EVENT]</span>' : ''}`;
     container.appendChild(div);
   });
 }
@@ -379,7 +423,7 @@ function toggleEquip(itemId) {
     game.equippedItem = null; notify('🔓 Item di-unequip.');
   } else {
     if (!game.inventory[itemId] || game.inventory[itemId] <= 0) { notify('⚠️ Kamu tidak punya item ini!'); return; }
-    game.equippedItem = itemId; notify('👑 ' + (RNG_DATA.eventItems.find(i=>i.id===itemId)?.name || itemId) + ' di-equip!');
+    game.equippedItem = itemId; notify('👑 ' + (RNG_DATA.eventItems.find(i => i.id===itemId)?.name || itemId) + ' di-equip!');
   }
   renderInventory(); updateUI(); saveToStorage();
 }
@@ -437,7 +481,7 @@ function renderInventory() {
       }
     }
   }
-  if (!hasItems) grid.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-dim);">Belum ada item. Mulai spin!</div>';
+  if (!hasItems) grid.innerHTML = '<p style="text-align:center;color:var(--text-dim)">Belum ada item. Mulai spin!</p>';
 }
 
 // ======================== REBIRTH ========================
@@ -446,7 +490,6 @@ function doRebirth() {
     notify(`⚠️ Syarat: ${CONFIG.settings.rebirthGems.toLocaleString()} Gems & ${CONFIG.settings.rebirthSpins.toLocaleString()} Spins!`); return;
   }
   if(!confirm('⚠️ REBIRTH akan mereset Gems & Inventory, tapi memberikan +0.5x Luck Permanent & membuka Rarity Transcendent! Lanjut?')) return;
-  
   game.gems = 0; game.inventory = {}; game.pityCounter = 0; game.streak = 0;
   game.rebirthCount++; game.rebirthLuckBonus += 0.5;
   notify(`👑 Rebirth ${game.rebirthCount} berhasil! +0.5x Luck Permanent.`);
@@ -488,8 +531,8 @@ function eventImport() {
   } catch(e) { notify('❌ Save data tidak valid!'); }
 }
 function eventExport() {
-  if (!game.eventData) { notify('⚠️ Belum ada data event!'); return; }
-  let exportData = { gems: game.eventData.gems, totalSpins: game.eventData.totalSpins, inventory: game.eventData.inventory, luckMultiplier: game.eventData.luckMultiplier, luckSpinsLeft: game.eventData.eventData?.luckSpinsLeft || 0, luckTimeEnd: game.eventData.luckTimeEnd, bestRarity: game.eventData.bestRarity, eventItems: game.eventData.eventItems || {} };
+  if (!game.eventData) { notify('⚠️ Belum ada data event!'); return; } 
+  let exportData = { gems: game.eventData.gems, totalSpins: game.eventData.totalSpins, inventory: game.eventData.inventory, luckMultiplier: game.eventData.luckMultiplier, luckSpinsLeft: game.eventData.luckSpinsLeft || 0, luckTimeEnd: game.eventData.luckTimeEnd, bestRarity: game.eventData.bestRarity, eventItems: game.eventData.eventItems || {} };
   document.getElementById('eventImportTextarea').value = btoa(JSON.stringify(exportData));
   notify('📤 Event data berhasil diexport!');
 }
@@ -534,7 +577,7 @@ function finishEventSpin(rarityTable, resultEl, labelEl, display) {
 }
 function renderEventInventory() {
   let grid = document.getElementById('eventInvGrid'); grid.innerHTML = '';
-  if (!game.eventData) { grid.innerHTML = '<div style="text-align:center;padding:10px;">Import save data untuk melihat inventory event.</div>'; return; }
+  if (!game.eventData) { grid.innerHTML = '<p style="text-align:center;color:var(--text-dim)">Import save data untuk melihat inventory event.</p>'; return; }
   let hasItems = false;
   for (let key in RNG_DATA.eventRarities) {
     let count = game.eventData.inventory[key] || 0;
@@ -561,7 +604,7 @@ function renderEventInventory() {
       }
     }
   }
-  if (!hasItems) grid.innerHTML = '<div style="text-align:center;padding:10px;color:var(--text-dim);">Belum ada item event. Mulai spin!</div>';
+  if (!hasItems) grid.innerHTML = '<p style="text-align:center;color:var(--text-dim)">Belum ada item event. Mulai spin!</p>';
 }
 function updateEventUI() {
   if (game.eventData) {
@@ -580,11 +623,11 @@ function saveToStorage() { try { localStorage.setItem('rngGameSave', JSON.string
 function loadFromStorage() { try { let data = localStorage.getItem('rngGameSave'); if (data) { game = { ...game, ...JSON.parse(data) }; updateUI(); updatePityUI(); } } catch(e) {} }
 function saveGame() { saveToStorage(); notify('💾 Game tersimpan!'); }
 function exportSave() {
-  let exportData = { gems: game.gems, totalSpins: game.totalSpins, inventory: game.inventory, luckMultiplier: game.luckMultiplier, luckSpinsLeft: game.luckSpinsLeft, luckTimeEnd: game.luckTimeEnd, bestRarity: game.bestRarity, eventItems: game.eventData ? game.eventData.eventItems : {}, mainEventInventory: game.mainEventInventory || {}, equippedItem: game.equippedItem, rebirthCount: game.rebirthCount, rebirthLuckBonus: game.rebirthLuckBonus, completedSets: game.completedSets };
+  let exportData = { gems: game.gems, totalSpins: game.totalSpins, inventory: game.inventory , luckMultiplier: game.luckMultiplier, luckSpinsLeft: game.luckSpinsLeft, luckTimeEnd: game.luckTimeEnd, bestRarity: game.bestRarity, eventItems: game.eventData ? game.eventData.eventItems : {}, mainEventInventory: game.mainEventInventory || {}, equippedItem: game.equippedItem, rebirthCount: game.rebirthCount, rebirthLuckBonus: game.rebirthLuckBonus, completedSets: game.completedSets };
   document.getElementById('saveTextarea').value = btoa(JSON.stringify(exportData));
   notify('📤 Save data berhasil diexport!');
 }
-function importSave() {
+function importSave() { 
   initAudio();
   let text = document.getElementById('saveTextarea').value.trim();
   if (!text) { notify('⚠️ Paste save data terlebih dahulu!'); return; }
