@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RNG-Game v2.1</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="flashOverlay"></div>
+  <div id="floatContainer"></div>
+
+  <header class="header">
+    <h1>⚔ RNG-GAME ⚔</h1>
+    <div class="subtitle">~ Spin Your Destiny ~</div>
+  </header>
+
+  <nav class="nav">
+    <button onclick="showPage('main')">🎰 Main</button>
+    <button onclick="showPage('inventory')">🎒 Inventory</button>
+    <button onclick="showPage('shop')">🏪 Toko</button>
+    <button onclick="showPage('log')">📜 RNG Log</button>
+    <button onclick="showPage('update')">📋 Update Log</button>
+    <button onclick="showPage('event')" class="event-btn">🌸 AprilEVENT</button>
+  </nav>
+
+  <main id="page-main" class="page active">
+    <div class="stats-bar">
+      <div class="stat-item"><span class="label">💎 GEMS</span><span id="stat-gems" class="value gems-val">0</span></div>
+      <div class="stat-item"><span class="label">🎰 SPINS</span><span id="stat-spins" class="value">0</span></div>
+      <div class="stat-item"><span class="label">🍀 LUCK</span><span id="stat-luck" class="value luck-val">1x</span></div>
+      <div class="stat-item"><span class="label">⭐ BEST</span><span id="stat-best" class="value">-</span></div>
+      <div class="stat-item"><span class="label">👑 REBIRTH</span><span id="stat-rebirth" class="value">0</span></div>
+    </div>
+    
+    <div class="toggle-row">
+      <span class="toggle-label">⚡ Fast Spin</span>
+      <button id="btnFastToggle" class="btn btn-nav" onclick="toggleFastSpin()">OFF</button>
+    </div>
+
+    <div class="spin-area">
+      <div class="spin-display" id="spinDisplay">
+        <div id="spinResult" class="spin-result">Tekan SPIN untuk mulai!</div>
+        <div id="spinRarityLabel" class="spin-rarity-label"></div>
+        <div id="streakDisplay">🔥 STREAK: 0</div>
+      </div>
+      <div class="pity-container">
+        <div class="pity-label"><span>PITY PROGRESS</span><span id="pityCount">0/50</span></div>
+        <div class="pity-bar"><div id="pityFill" class="pity-fill"></div></div>
+      </div>
+      <div class="bulk-row" style="margin-top:10px;">
+        <button id="btnSpin" class="btn btn-spin" onclick="doSpin()">⚔ SPIN ⚔</button>
+        <button class="btn btn-bulk" onclick="doBulkSpin(10)">x10</button>
+        <button class="btn btn-bulk" onclick="doBulkSpin(100)">x100</button>
+        <button id="btnAuto" class="btn btn-auto" onclick="toggleAutoSpin()">▶ AUTO</button>
+      </div>
+      <div class="total-spins-display" id="totalSpinsDisplay">Total Spins: 0</div>
+      <button id="btnRebirth" class="btn btn-rebirth" onclick="doRebirth()">👑 REBIRTH (Req: 10k Gems, 5k Spins)</button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">💾 Save / Load / Import</div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn btn-save" onclick="saveGame()">💾 Save</button>
+        <button class="btn btn-load" onclick="importSave()">📂 Load</button>
+        <button class="btn btn-nav" onclick="exportSave()">📤 Export Text</button>
+        <button class="btn btn-nav" onclick="resetGame()">🗑 Reset</button>
+      </div>
+      <textarea id="saveTextarea" class="save-textarea" placeholder="Paste save code here or export to get one..."></textarea>
+    </div>
+  </main>
+
+  <main id="page-inventory" class="page">
+    <div class="panel">
+      <div class="panel-title">🎒 Inventory Utama</div>
+      <div id="setProgress"></div>
+      <div class="inv-grid" id="invGrid"></div>
+      <button class="btn btn-nav" style="margin-top:15px;" onclick="showPage('main')">⬅ Kembali ke Main</button>
+    </div>
+  </main>
+
+  <main id="page-shop" class="page">
+    <div class="panel">
+      <div class="panel-title">🏪 Toko - Luck Boost & Utility</div>
+      <div id="shopList"></div>
+      <button class="btn btn-nav" style="margin-top:15px;" onclick="showPage('main')">⬅ Kembali ke Main</button>
+    </div>
+  </main>
+
+  <main id="page-log" class="page">
+    <div class="panel">
+      <div class="panel-title">📜 RNG Log</div>
+      <div class="log-container" id="logContainer"></div>
+      <button class="btn btn-nav" onclick="clearLog()" style="margin:10px 0;">🗑 Clear Log</button>
+      <button class="btn btn-nav" onclick="showPage('main')">⬅ Kembali ke Main</button>
+    </div>
+  </main>
+
+  <main id="page-update" class="page">
+    <div class="panel">
+      <div class="panel-title">📋 Update Log</div>
+      <div id="updateLog"></div>
+      <button class="btn btn-nav" style="margin-top:15px;" onclick="showPage('main')">⬅ Kembali ke Main</button>
+    </div>
+  </main>
+
+  <main id="page-event" class="page">
+    <div class="event-banner">
+      <h2>🌸 AprilEVENT 🌸</h2>
+      <p>Hanya item eksklusif event yang bisa didapat di sini!</p>
+    </div>
+    <div class="panel">
+      <div class="panel-title">📥 Transfer & Save Data</div>
+      <button class="btn btn-nav" onclick="transferEventToMain()">🔄 Transfer ke Main</button>
+      <button class="btn btn-nav" onclick="eventImport()">📥 Import Save</button>
+      <textarea id="eventImportTextarea" class="save-textarea" placeholder="Paste event save..."></textarea>
+    </div>
+    <div class="stats-bar">
+      <div class="stat-item"><span class="label">💎 GEMS</span><span id="eventStatGems" class="value gems-val">0</span></div>
+      <div class="stat-item"><span class="label">🎰 SPINS</span><span id="eventStatSpins" class="value">0</span></div>
+      <div class="stat-item"><span class="label">🍀 LUCK</span><span id="eventStatLuck" class="value luck-val">1x</span></div>
+    </div>
+    <div class="spin-area">
+      <div class="spin-display" id="eventSpinDisplay">
+        <div id="eventSpinResult" class="spin-result">Import save lalu tekan SPIN!</div>
+        <div id="eventSpinRarityLabel" class="spin-rarity-label"></div>
+      </div>
+      <button id="eventBtnSpin" class="btn btn-spin" onclick="doEventSpin()">🌸 EVENT SPIN 🌸</button>
+      <button class="btn btn-nav" onclick="eventExport()">📤 Export</button>
+    </div>
+    <div class="panel">
+      <div class="panel-title">🎒 Event Inventory</div>
+      <div class="inv-grid" id="eventInvGrid"></div>
+      <button class="btn btn-nav" style="margin-top:15px;" onclick="showPage('main')">⬅ Kembali ke Main</button>
+    </div>
+  </main>
+
+  <div id="notification" class="notification"></div>
+  <button id="soundToggle" onclick="toggleSound()">🔊</button>
+  <script src="script.js"></script>
+</body>
+</html>

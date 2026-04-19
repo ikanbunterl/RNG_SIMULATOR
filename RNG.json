@@ -1,0 +1,35 @@
+{
+  "rarities": {
+    "common": { "name": "Common", "odds": 1, "gems": 1, "cssClass": "rarity-common", "color": "#b0b0b0" },
+    "uncommon": { "name": "Uncommon", "odds": 2, "gems": 2, "cssClass": "rarity-uncommon", "color": "#4CAF50" },
+    "rare": { "name": "Rare", "odds": 5, "gems": 5, "cssClass": "rarity-rare", "color": "#2196F3" },
+    "epic": { "name": "Epic", "odds": 10, "gems": 10, "cssClass": "rarity-epic", "color": "#9C27B0" },
+    "legendary": { "name": "Legendary", "odds": 25, "gems": 25, "cssClass": "rarity-legendary", "color": "#FF9800" },
+    "mythic": { "name": "Mythic", "odds": 50, "gems": 50, "cssClass": "rarity-mythic", "color": "#F44336" },
+    "diamond": { "name": "Diamond", "odds": 100, "gems": 100, "cssClass": "rarity-diamond", "color": "#00BCD4" },
+    "divine": { "name": "Divine", "odds": 200, "gems": 200, "cssClass": "rarity-divine", "color": "#FFD700" },
+    "ethereal": { "name": "Ethereal", "odds": 1000, "gems": 1000, "cssClass": "rarity-ethereal", "color": "#E0FFFF" },
+    "secret": { "name": "Secret", "odds": 500, "gems": 500, "cssClass": "rarity-secret", "color": "#FF00FF" },
+    "transcendent": { "name": "Transcendent", "odds": 5000, "gems": 2000, "cssClass": "rarity-transcendent", "color": "#FFFFFF", "rebirthReq": 1 }
+  },
+  "eventRarities": {
+    "blossom": { "name": "Spring Blossom", "odds": 2, "gems": 3, "cssClass": "rarity-rare", "color": "#FF69B4" },
+    "mask": { "name": "Fool's Mask", "odds": 5, "gems": 8, "cssClass": "rarity-epic", "color": "#9C27B0" },
+    "egg": { "name": "Easter Egg", "odds": 12, "gems": 15, "cssClass": "rarity-legendary", "color": "#FF9800" },
+    "badge": { "name": "April Badge", "odds": 25, "gems": 30, "cssClass": "rarity-mythic", "color": "#F44336" },
+    "crown": { "name": "Spring Crown", "odds": 60, "gems": 80, "cssClass": "rarity-diamond", "color": "#00BCD4" },
+    "charm": { "name": "April Rain Charm", "odds": 150, "gems": 200, "cssClass": "rarity-secret", "color": "#FF00FF" }
+  },
+  "eventItems": [
+    {"id": "april_badge", "name": "April Badge", "rarity": "badge", "desc": "Badge eksklusif AprilEVENT"},
+    {"id": "spring_crown", "name": "Spring Crown", "rarity": "crown", "desc": "Mahkota musim semi yang langka"},
+    {"id": "easter_egg", "name": "Easter Egg", "rarity": "egg", "desc": "Telur Paskas misterius"},
+    {"id": "fools_mask", "name": "Fool's Mask", "rarity": "mask", "desc": "Topeng April Mop"},
+    {"id": "spring_blossom", "name": "Spring Blossom", "rarity": "blossom", "desc": "Bunga musim semi yang indah"},
+    {"id": "april_rain", "name": "April Rain Charm", "rarity": "charm", "desc": "Jimat langka hujan April"},
+    {"id": "cherry_petals", "name": "Cherry Petals", "rarity": "blossom", "desc": "Kelopak bunga sakura jatuh"},
+    {"id": "golden_bunny", "name": "Golden Bunny", "rarity": "egg", "desc": "Kelinci emas pembawa keberuntungan"},
+    {"id": "lucky_rabbit", "name": "Lucky Rabbit", "rarity": "egg", "desc": "Kelinci pembawa hoki"},
+    {"id": "rainbow_scarf", "name": "Rainbow Scarf", "rarity": "badge", "desc": "Syal musim semi berwarna-warni"}
+  ]
+}

@@ -1,53 +1,50 @@
 {
-  "initialGems": 1000,
-  "pityThreshold": 50,
-  "maxLuckLevel": 10,
-  "crateBaseCost": 100,
-  "crateCostMultiplier": 150,
-  "autoSpinInterval": 800,
-  "eventTriggerChance": 0.15,
-  "gemMultipliers": { "duplicate": 0.5, "newItemBonus": 1.2 },
-  "rarityRules": [
-    { "id": "common", "name": "Common", "baseChance": 60.0, "colorVar": "--r-common" },
-    { "id": "uncommon", "name": "Uncommon", "baseChance": 25.0, "colorVar": "--r-uncommon" },
-    { "id": "rare", "name": "Rare", "baseChance": 10.0, "colorVar": "--r-rare" },
-    { "id": "epic", "name": "Epic", "baseChance": 4.0, "colorVar": "--r-epic" },
-    { "id": "legendary", "name": "Legendary", "baseChance": 0.8, "colorVar": "--r-legendary" },
-    { "id": "mythic", "name": "Mythic", "baseChance": 0.2, "colorVar": "--r-mythic" },
-    { "id": "divine", "name": "Divine", "baseChance": 0.05, "colorVar": "--r-divine" }
+  "shopItems": [
+    {"id": "luck2x_10spin", "name": "2x Luck (10 Spin)", "desc": "Luck 2x untuk 10 spin berikutnya", "cost": 20, "type": "spin", "multiplier": 2, "amount": 10, "category": "luck"},
+    {"id": "luck3x_10spin", "name": "3x Luck (10 Spin)", "desc": "Luck 3x untuk 10 spin berikutnya", "cost": 50, "type": "spin", "multiplier": 3, "amount": 10, "category": "luck"},
+    {"id": "luck5x_10spin", "name": "5x Luck (10 Spin)", "desc": "Luck 5x untuk 20 spin berikutnya", "cost": 120, "type": "spin", "multiplier": 5, "amount": 20, "category": "luck"},
+    {"id": "luck2x_5min", "name": "2x Luck (5 Menit)", "desc": "Luck 2x selama 5 menit", "cost": 30, "type": "time", "multiplier": 2, "duration": 300, "category": "luck"},
+    {"id": "luck3x_5min", "name": "3x Luck (5 Menit)", "desc": "Luck 3x selama 5 menit", "cost": 75, "type": "time", "multiplier": 3, "duration": 300, "category": "luck"},
+    {"id": "luck5x_5min", "name": "5x Luck (5 Menit)", "desc": "Luck 5x selama 5 menit", "cost": 180, "type": "time", "multiplier": 5, "duration": 300, "category": "luck"},
+    {"id": "luck2x_20spin", "name": "2x Luck (20 Spin)", "desc": "Luck 2x untuk 20 spin berikutnya", "cost": 35, "type": "spin", "multiplier": 2, "amount": 20, "category": "luck"},
+    {"id": "luck3x_20spin", "name": "3x Luck (20 Spin)", "desc": "Luck 3x untuk 20 spin berikutnya", "cost": 90, "type": "spin", "multiplier": 3, "amount": 20, "category": "luck"},
+    {"id": "luck5x_20spin", "name": "5x Luck (20 Spin)", "desc": "Luck 5x untuk 20 spin berikutnya", "cost": 200, "type": "spin", "multiplier": 5, "amount": 20, "category": "luck"},
+    {"id": "luck10x_30spin", "name": "10x Luck (30 Spin)", "desc": "Luck 10x untuk 30 spin berikutnya", "cost": 300, "type": "spin", "multiplier": 10, "amount": 30, "category": "luck"},
+    {"id": "luck5x_10min", "name": "5x Luck (10 Menit)", "desc": "Luck 5x selama 10 menit", "cost": 150, "type": "time", "multiplier": 5, "duration": 600, "category": "luck"},
+    {"id": "pity_skip", "name": "Pity Reset & Skip", "desc": "Reset pity counter & dapat +50 gems", "cost": 150, "type": "utility", "multiplier": 1, "amount": 0, "category": "utility"},
+    {"id": "pity_reduce_25", "name": "Pity -25", "desc": "Kurangi pity counter sebesar 25", "cost": 75, "type": "utility", "multiplier": 1, "amount": 0, "category": "utility"},
+    {"id": "auto_speed_boost", "name": "Turbo Auto-Spin", "desc": "Kurangi delay auto-spin menjadi 600ms", "cost": 100, "type": "utility", "multiplier": 1, "amount": 0, "category": "utility"}
   ],
-  "banners": [
-    { "id": "b_april_fire", "name": "🔥 Festival Api", "startMonth": 4, "startDay": 10, "endMonth": 4, "endDay": 16, "rateUp": ["rare", "epic"], "bonusChance": 4.0 }
-  ],
-  "milestones": [
-    { "id": "m1", "name": "Pemula Gacha", "target": 50, "type": "spins", "reward": { "gems": 200 } },
-    { "id": "m2", "name": "Pemburu Epic", "target": 5, "type": "epic", "reward": { "gems": 500 } },
-    { "id": "m3", "name": "Legenda Hidup", "target": 2, "type": "legendary", "reward": { "luck": 1 } },
-    { "id": "m4", "name": "Kolektor Langka", "target": 200, "type": "spins", "reward": { "gems": 1000 } }
-  ],
-  "events": [
-    { "id": "double_gems", "name": "💰 Double Gems", "duration": 5, "effectType": "gem_mult", "value": 2 },
-    { "id": "luck_boost", "name": "🍀 Luck Surge (+2)", "duration": 5, "effectType": "luck_temp", "value": 2 },
-    { "id": "pity_rush", "name": "⚡ Pity Rush (-10)", "duration": 3, "effectType": "pity_mod", "value": -10 }
-  ],
-  "specialEvents": {
-    "april_fools": {
-      "id": "april_fools", "name": "🤡 April Fools: RNG Chaos",
-      "start": { "month": 4, "day": 1 }, "end": { "month": 4, "day": 1 },
-      "description": "Probabilitas rusak total! Gems bisa 0x hingga 10x. Item misterius muncul!",
-      "customLogic": "chaos_mode"
-    },
-    "new_year": {
-      "id": "new_year", "name": "🎆 Festival Tahun Baru",
-      "start": { "month": 12, "day": 30 }, "end": { "month": 1, "day": 2 },
-      "description": "Selamat datang tahun baru! 3x Gems, Pity -5 tiap spin, item kembang api eksklusif!",
-      "gemMult": 3, "pityMod": -5
-    },
-    "halloween": {
-      "id": "halloween", "name": "🎃 Halloween: Curse & Blessing",
-      "start": { "month": 10, "day": 25 }, "end": { "month": 11, "day": 2 },
-      "description": "Spin terkutuk (-50% gems) atau diberkati (+100% & guaranteed Rare+). Item hantu langka!",
-      "customLogic": "curse_bless"
-    }
-  }
+  "sets": {
+    "april_complete": { "name": "April Complete", "items": ["april_badge", "spring_crown", "easter_egg", "fools_mask", "spring_blossom", "april_rain", "cherry_petals", "golden_bunny", "lucky_rabbit", "rainbow_scarf"], "reward": "luck_0.3x" }
+  },
+  "settings": {
+    "autoSpinInterval": 1200,
+    "flickerCount": 10,
+    "flickerInterval": 80,
+    "logMaxEntries": 200,
+    "notificationDuration": 2500,
+    "eventExclusiveChance": 0.15,
+    "pityThreshold": 50,
+    "pityGuarantee": "rare",
+    "streakInterval": 10,
+    "streakLuckBonus": 0.2,
+    "rebirthGems": 10000,
+    "rebirthSpins": 5000,
+    "fastSpinMode": false
+  },
+  "updateEntries": [
+    { "date": "2026-04-20", "text": "<span class=\"`fixed`\">[maintenance]maintenance info akan dilakukan pada jam 11-12 WIB</span>" },
+    { "date": "2026-04-20", "text": "<span class=\"added\">[ADDED] Aura/Equip System, Set Collection Bonuses, Prestige/Rebirth, Bulk Spin (x10/x100), Fast Spin Toggle, Floating Gems Text, Number Ticker, Haptic Feedback, & Enhanced Slot-Machine Anticipation! </span>" },
+    { "date": "2026-04-19", "text": "<span class=\"added\">[ADDED] Divine & Ethereal rarities, Event-to-Main transfer fix, 3 new Luck/Utility shop items, & revamped Event UI layout!</span>" },
+    { "date": "2026-04-19", "text": "<span class=\"added\">[ADDED] Pity System (Guaranteed Rare every 50 spins), Combo/Streak System, Screen Shake & Flash Effects, Sound Engine, & Shop Categories.</span>" },
+    { "date": "2026-04-18", "text": "<span class=\"added\">[ADDED] Event AprilEVENT dengan item eksklusif! Rombak Event Pool (hanya drop item event).</span>" },
+    { "date": "2026-04-17", "text": "<span class=\"added\">[ADDED] Sistem Luck temporary (2x, 3x, 5x) di toko.</span>" },
+    { "date": "2026-04-16", "text": "<span class=\"added\">[ADDED] Auto Spin feature.</span>" },
+    { "date": "2026-04-15", "text": "<span class=\"added\">[ADDED] Inventory system & Save/Load text-based.</span>" },
+    { "date": "2026-04-14", "text": "<span class=\"fixed\">[FIXED] RNG odds calculation diperbaiki.</span>" },
+    { "date": "2026-04-13", "text": "<span class=\"added\">[ADDED] Secret rarity (1 in 500) dengan efek rainbow.</span>" },
+    { "date": "2026-04-12", "text": "<span class=\"added\">[ADDED] RNG Log untuk tracking semua spin.</span>" },
+    { "date": "2026-04-11", "text": "<span class=\"added\">[ADDED] Initial release - RNG Game v1.0</span>" }
+  ]
 }
